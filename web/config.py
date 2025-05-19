@@ -1,0 +1,3 @@
+IP = "172.20.10.2"
+PORT = 8000
+KEY = "AIzaSyBfybvDco0t_W-UpNZV3fQYZwFcY_TRDJA"

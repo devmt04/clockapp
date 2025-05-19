@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlaBlaBla</title>
+</head>
+<body style="background-color: black;color:grey;">
+
+    <p style="font-size: 2em;">
+
+        <span id="value">Loading...</span>
+        <script>
+            function fetchData() {
+                fetch('/data')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('value').innerText = data.data;
+                    });
+            }
+
+            // Poll every 1 second
+            setInterval(fetchData, 1000);
+            fetchData(); // Initial call
+        </script>
+    </p>
+
+
+</body>
+</html>
