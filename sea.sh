@@ -36,11 +36,17 @@ exec bwrap \
   --ro-bind-try "$WAYLAND_SOCK" "$WAYLAND_SOCK" \
   --ro-bind-try "$PULSE_SOCK" "$PULSE_SOCK" \
   --ro-bind-try "$PIPEWIRE_SOCK" "$PIPEWIRE_SOCK" \
+  --dev-bind-try /dev/snd /dev/snd \
+  --dev-bind-try /dev/video0 /dev/video0 \
+  --dev-bind-try /dev/video1 /dev/video1 \
   --setenv DISPLAY "${DISPLAY:-}" \
   --setenv WAYLAND_DISPLAY "${WAYLAND_DISPLAY:-wayland-0}" \
   --setenv PULSE_SERVER "unix:${PULSE_SOCK}" \
   --unsetenv DBUS_SESSION_BUS_ADDRESS \
-  --unshare-all \
+  --unshare-pid \
+  --unshare-ipc \
+  --unshare-uts \
+  --unshare-cgroup \
   --share-net \
-  --hostname sandboxed \
+  --hostname mohit \
   /app/codetantra-sea

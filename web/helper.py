@@ -10,6 +10,12 @@ import os
 import config
 import threading
 
+
+
+import mss
+import mss.tools
+
+
 # Set your OpenAI API key
 # openai.api_key = config.KEY
 
@@ -23,11 +29,21 @@ client = genai.Client(api_key=config.KEY)
 
 def take_screenshot():
     global count
+    os.makedirs("ss", exist_ok=True)
     filepath = f"ss/{count}.png"
-    count +=1
-    screenshot = pyautogui.screenshot()
-    screenshot.save(filepath)
+    count += 1
+    with mss.mss() as sct:
+        monitor = sct.monitors[1]
+        sct_img = sct.grab(monitor)
+        mss.tools.to_png(sct_img.rgb, sct_img.size, output=filepath)
     return filepath
+   # # os.makedirs("ss", exist_ok=True)
+   #  global count
+   #  filepath = f"/home/mohit/Downloads/sea/opt/CodeTantraSEA/web/ss/{count}.png"
+   #  count +=1
+   #  screenshot = pyautogui.screenshot()
+   #  screenshot.save(filepath)
+   #  return filepath
 
 def extract_text_from_image(image_path):
     return pytesseract.image_to_string(Image.open(image_path))
@@ -46,6 +62,22 @@ def ask_openai_question(question):
 def broadcast():
     return ans
 
+
+def begin():
+    while True:
+        time.sleep(15)
+        path = take_screenshot()
+        print(f"Screenshot {count} saved to {path}")
+        text = extract_text_from_image(path)
+        print("Extracted text:")
+        print(text)
+        print("Querying API...")
+        answer = ask_openai_question(text)
+        print("Answer:")
+        print(answer)
+        global ans
+        ans = answer
+
 def on_press(key):
     try:
         if key == keyboard.Key.ctrl_l:
@@ -53,17 +85,11 @@ def on_press(key):
         elif hasattr(key, 'char') and key.char == 'm':
             if 'ctrl' in pressed_keys:
                 print("Ctrl+M detected. Taking screenshot...")
-                path = take_screenshot()
-                print(f"Screenshot saved to {path}")
-                text = extract_text_from_image(path)
-                print("Extracted text:")
-                print(text)
-                print("Querying API...")
-                answer = ask_openai_question(text)
-                print("Answer:")
-                print(answer)
-                global ans
-                ans = answer
+                global ans 
+                ans = "Starting.."
+                begin()
+
+
     except Exception as e:
         print(f"Error: {e}")
 
